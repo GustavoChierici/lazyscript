@@ -3,8 +3,19 @@
 namespace LazyscriptInterpreter
 {
     bool Lazyscript::had_error = false;
-    Lazyscript::Lazyscript(std::vector<std::string> args /* {} */)
+    Lazyscript::Lazyscript()
     {
+    }
+
+    Lazyscript& Lazyscript::getInstance()
+    {
+        static Lazyscript instance;
+
+        return instance;
+    }
+
+    void Lazyscript::init(std::vector<std::string> args /* {} */)
+    {  
         if(args.size() > 1)
         {
             std::cout << "Usage: lazyscript [script]" << std::endl;
@@ -14,13 +25,6 @@ namespace LazyscriptInterpreter
             runFile(args[0]);
         else
             runPrompt();
-    }
-
-    Lazyscript& Lazyscript::getInstance(std::vector<std::string> args /* {} */)
-    {
-        static Lazyscript instance(args);
-
-        return instance;
     }
 
     void Lazyscript::runFile(const std::string& path)

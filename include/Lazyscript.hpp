@@ -13,7 +13,7 @@ namespace LazyscriptInterpreter
     class Lazyscript
     {
     public:
-        static Lazyscript& getInstance(std::vector<std::string> args = {});
+        static Lazyscript& getInstance();
 
         // Lazyscript(Lazyscript const&) = delete;
         // Lazyscript(Lazyscript&&) = delete;
@@ -21,9 +21,10 @@ namespace LazyscriptInterpreter
         // void operator=(Lazyscript&&) = delete;
 
         static void error(int line, std::string message);
+        static void init(std::vector<std::string> args = {});
         ~Lazyscript() = default;
     private:
-        Lazyscript(std::vector<std::string> args = {});
+        Lazyscript();
 
         static void runFile(const std::string& path);
         static void runPrompt();

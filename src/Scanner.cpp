@@ -1,5 +1,6 @@
 #include "Scanner.hpp"
 #include "Lazyscript.hpp"
+#include <ctype.h>
 
 namespace LazyscriptInterpreter
 {
@@ -61,7 +62,10 @@ namespace LazyscriptInterpreter
         case '>': addToken(match('=') ? GREATER_EQUAL : GREATER); break;
         case '/': 
             if(match('/'))
-                while(peek() != '\n' and !isAtEnd()) advance();
+            {
+                while(peek() != '\n' && !isAtEnd()) 
+                    advance();
+            }
             else
                 addToken(SLASH);
             break;
@@ -71,9 +75,9 @@ namespace LazyscriptInterpreter
         case '\n': line++; break;
         case '"': string(); break;
         default:
-            if(std::isdigit(c))
+            if(isdigit(c))
                 number();
-            else if(std::isalpha(c))
+            else if(isalpha(c))
                 identifier();
             else
                 Lazyscript::getInstance().error(line, "Unexpected character.");
@@ -83,7 +87,7 @@ namespace LazyscriptInterpreter
 
     void Scanner::identifier()
     {
-        while(std::isalnum(peek())) advance();
+        while(isalnum(peek())) advance();
 
         const auto text = source.substr(start, current);
         auto keyword_it = keywords.find(text);
@@ -95,13 +99,13 @@ namespace LazyscriptInterpreter
 
     void Scanner::number()
     {
-        while(std::isdigit(peek())) advance();
+        while(isdigit(peek())) advance();
 
-        if(peek() == '.' && std::isdigit(peekNext()))
+        if(peek() == '.' && isdigit(peekNext()))
         {
             advance();
 
-            while(std::isdigit(peek())) advance();
+            while(isdigit(peek())) advance();
         }
 
         addToken(NUMBER, std::stod(source.substr(start, current)));
@@ -109,7 +113,7 @@ namespace LazyscriptInterpreter
 
     void Scanner::string()
     {
-        while(peek() != '"' and !isAtEnd())
+        while(peek() != '"' && !isAtEnd())
         {
             if(peek() == '\n') line++;
             advance();
@@ -129,7 +133,7 @@ namespace LazyscriptInterpreter
 
     const bool Scanner::match(char expected)
     {
-        return (isAtEnd() or source.at(current++ != expected)) ? false : true;
+        return (isAtEnd() || source.at(current++) != expected) ? false : true;
     }
 
     char Scanner::peek()
